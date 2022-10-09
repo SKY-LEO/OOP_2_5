@@ -4,9 +4,7 @@ import java.util.*;
 public class Main {
     static int CAPACITY = 10;
     static int MAX_INT = 15;
-
     static boolean ASCENDING_SORT = true;
-
     static int FILTER_MULTIPLIES_OF = 3;
 
     static String[] main_menu = {
@@ -30,7 +28,7 @@ public class Main {
                 scanner.nextLine();
                 switch (number) {
                     case 1 -> task1(CAPACITY, MAX_INT, ASCENDING_SORT, FILTER_MULTIPLIES_OF);
-                    case 2 -> task2();
+                    case 2 -> task2(CAPACITY, MAX_INT);
                     case 3 -> {
                         flag = false;
                         System.out.println("До свидания!");
@@ -46,10 +44,7 @@ public class Main {
     }
 
     private static void task1(int capacity, int max_int, boolean ascending_sort, int filter_num) {
-        ArrayList<Integer> random_numbers = new ArrayList<>(capacity);
-        for (int i = 0; i < capacity; i++) {
-            random_numbers.add(i, (int) (Math.random() * (max_int * 2 + 1)) - max_int);
-        }
+        ArrayList<Integer> random_numbers = listGenerator(capacity, max_int);
         Collections.addAll(random_numbers);
         random_numbers.forEach(element -> System.out.print(element + " "));
         System.out.println();
@@ -74,8 +69,38 @@ public class Main {
         System.out.println();
     }
 
-    private static void task2() {
+    private static void task2(int capacity, int max_int) {
+        int x = (int) (Math.random() * (max_int * 2 + 1)) - max_int;
+        ArrayList<Integer> random_list = listGenerator(capacity, max_int);
+        System.out.println("X = " + x);
+        System.out.println("До:\n" + random_list);
+        for (int i = 0; i < capacity - 1; i++) {
+            for (int j = i + 1; j < capacity; j++) {
+                if (random_list.get(j) < random_list.get(i)) {
+                    random_list.set(j, random_list.get(j) + random_list.get(i));
+                    random_list.set(i, random_list.get(j) - random_list.get(i));
+                    random_list.set(j, random_list.get(j) - random_list.get(i));
+                }
+            }
+        }
+        /*for (int i = 0; i < capacity - 1; i++) {
+            for (int j = i + 1; j < capacity; j++) {
+                if (random_list.get(j) < x) {
+                    random_list.set(j, random_list.get(j) + random_list.get(i));
+                    random_list.set(i, random_list.get(j) - random_list.get(i));
+                    random_list.set(j, random_list.get(j) - random_list.get(i));
+                }
+            }
+        }*/
+        System.out.println("После:\n" + random_list);
+    }
 
+    private static ArrayList<Integer> listGenerator(int capacity, int max_int) {
+        ArrayList<Integer> generated_list = new ArrayList<>(capacity);
+        for (int i = 0; i < capacity; i++) {
+            generated_list.add(i, (int) (Math.random() * (max_int * 2 + 1)) - max_int);
+        }
+        return generated_list;
     }
 
     private static void printMenuOptions(String[] options) {

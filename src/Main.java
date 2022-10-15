@@ -1,4 +1,7 @@
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 public class Main {
@@ -28,7 +31,7 @@ public class Main {
                 scanner.nextLine();
                 switch (number) {
                     case 1 -> task1(CAPACITY, MAX_INT, ASCENDING_SORT, FILTER_MULTIPLIES_OF);
-                    case 2 -> task2(CAPACITY, MAX_INT);
+                    case 2 -> task2(scanner, CAPACITY, MAX_INT);
                     case 3 -> {
                         flag = false;
                         System.out.println("До свидания!");
@@ -46,8 +49,9 @@ public class Main {
     private static void task1(int capacity, int max_int, boolean ascending_sort, int filter_num) {
         ArrayList<Integer> random_numbers = listGenerator(capacity, max_int);
         Collections.addAll(random_numbers);
+        System.out.println("ArrayList состоит из:");
         random_numbers.forEach(element -> System.out.print(element + " "));
-        System.out.println();
+        System.out.println("\nСортировка:");
         if (ascending_sort) {
             random_numbers.stream()
                     .sorted()
@@ -57,11 +61,11 @@ public class Main {
                     .sorted(Collections.reverseOrder())
                     .forEach(element -> System.out.print(element + " "));
         }
-        System.out.println();
+        System.out.println("\nЭлементы, которые делятся на " + filter_num + " с остатком:");
         random_numbers.stream()
                 .filter(element -> element % filter_num != 0)
                 .forEach(element -> System.out.print(element + " "));
-        System.out.println();
+        System.out.println("\nСоздадим поток из int в string:");
         List<String> toStr = random_numbers.stream()
                 .map(element -> element.toString())
                 .toList();
@@ -69,30 +73,23 @@ public class Main {
         System.out.println();
     }
 
-    private static void task2(int capacity, int max_int) {
-        int x = (int) (Math.random() * (max_int * 2 + 1)) - max_int;
+    private static void task2(Scanner scanner, int capacity, int max_int) {
+        int x;
         ArrayList<Integer> random_list = listGenerator(capacity, max_int);
-        System.out.println("X = " + x);
-        System.out.println("До:\n" + random_list);
-        for (int i = 0; i < capacity - 1; i++) {
-            for (int j = i + 1; j < capacity; j++) {
-                if (random_list.get(j) < random_list.get(i)) {
-                    random_list.set(j, random_list.get(j) + random_list.get(i));
-                    random_list.set(i, random_list.get(j) - random_list.get(i));
-                    random_list.set(j, random_list.get(j) - random_list.get(i));
-                }
-            }
-        }
-        /*for (int i = 0; i < capacity - 1; i++) {
-            for (int j = i + 1; j < capacity; j++) {
-                if (random_list.get(j) < x) {
-                    random_list.set(j, random_list.get(j) + random_list.get(i));
-                    random_list.set(i, random_list.get(j) - random_list.get(i));
-                    random_list.set(j, random_list.get(j) - random_list.get(i));
-                }
-            }
-        }*/
-        System.out.println("После:\n" + random_list);
+        System.out.println("ArrayList состоит из:");
+        random_list.forEach(element -> System.out.print(element + " "));
+        x = inputNumber(scanner, "\nВведите Х:");
+        Stream<Integer> stream_first_part = random_list.stream()
+                .filter(element -> element < x);
+        Stream<Integer> stream_of_x = random_list.stream()
+                .filter(element->element==x);
+        Stream<Integer> stream_second_part = random_list.stream()
+                .filter(element -> element > x);
+        Stream<Integer> concated_stream = Stream.concat(stream_first_part, stream_of_x);
+        concated_stream = Stream.concat(concated_stream, stream_second_part);
+        System.out.println("После преобразования:");
+        concated_stream.forEach(element -> System.out.print(element + " "));
+        System.out.println();
     }
 
     private static ArrayList<Integer> listGenerator(int capacity, int max_int) {
@@ -107,6 +104,20 @@ public class Main {
         System.out.println("Выберите пункт меню:");
         for (int i = 0; i < options.length; i++) {
             System.out.println((i + 1) + ") " + options[i]);
+        }
+    }
+
+    private static int inputNumber(Scanner scanner, String message) {
+        System.out.println(message);
+        int num;
+        while (true) {
+            try {
+                num = scanner.nextInt();
+                return num;
+            } catch (InputMismatchException e) {
+                System.out.println("Введите целое число!");
+                scanner.nextLine();
+            }
         }
     }
 }

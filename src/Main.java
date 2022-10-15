@@ -1,8 +1,5 @@
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 
 public class Main {
     static int CAPACITY = 10;
@@ -82,7 +79,7 @@ public class Main {
         Stream<Integer> stream_first_part = random_list.stream()
                 .filter(element -> element < x);
         Stream<Integer> stream_of_x = random_list.stream()
-                .filter(element->element==x);
+                .filter(element -> element == x);
         Stream<Integer> stream_second_part = random_list.stream()
                 .filter(element -> element > x);
         Stream<Integer> concated_stream = Stream.concat(stream_first_part, stream_of_x);
